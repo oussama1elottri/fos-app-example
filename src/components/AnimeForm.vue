@@ -1,6 +1,7 @@
 <template>
   <div>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+      <!-- Form fields... -->
       <b-form-group id="input-group-1" label="Title:" label-for="input-1">
         <b-form-input
           id="input-1"
@@ -43,6 +44,8 @@
         ></b-form-input>
       </b-form-group>
 
+      <!-- Form fields... -->
+
       <b-button type="submit" variant="primary">Submit</b-button>
       <b-button type="reset" variant="danger">Reset</b-button>
     </b-form>
@@ -51,6 +54,7 @@
     </b-card>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -70,12 +74,37 @@ export default {
       show: true,
     };
   },
+  mounted() {
+    const storedData = localStorage.getItem('animeFormData');
+    if (storedData) {
+      this.form = JSON.parse(storedData);
+    }
+  },
+  watch: {
+    form: {
+      deep: true,
+      handler(newVal) {
+        localStorage.setItem('animeFormData', JSON.stringify(newVal));
+      }
+    }
+  },
   methods: {
     onSubmit(event) {
+
+      
       event.preventDefault();
       alert(JSON.stringify(this.form));
       this.$store.dispatch("addAnime", { ...this.form });
-    },
+
+      const formData = {
+        // Capture the form input values and store them in an objecty 
+        
+        title: this.title,
+        description: this.description,
+        // ... add more form input properties as needed
+      };
+      localStorage.setItem('formData', JSON.stringify(formData));
+      },
     onReset(event) {
       event.preventDefault();
       // Reset our form values
@@ -87,9 +116,10 @@ export default {
       this.show = false;
       this.$nextTick(() => {
         this.show = true;
+        
       });
     },
-  },
+  }
 };
 </script>
 
